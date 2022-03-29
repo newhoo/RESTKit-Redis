@@ -13,6 +13,7 @@ import io.github.newhoo.restkit.restful.RestClient;
 import io.github.newhoo.restkit.restful.ep.RestClientProvider;
 import io.github.newhoo.restkit.util.JsonUtils;
 import nl.melp.redis.Redis;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author huzunrong
@@ -35,21 +37,26 @@ public class RedisRestClient implements RestClient {
 
     @Override
     public List<KV> getConfig(@NotNull RestItem restItem, @NotNull Project project) {
-        RedisSetting redisSetting = RedisSettingComponent.getInstance(project).getState();
         return Arrays.asList(
-                new KV("address", redisSetting.getRedisAddress())
+                new KV("address", "{{redisAddress}}")
         );
     }
 
     @NotNull
     @Override
     public Request createRequest(RestClientData restClientData, Project project) {
+        RedisSetting redisSetting = RedisSettingComponent.getInstance(project).getState();
+        Map<String, String> config = restClientData.getConfig();
+        String address = StringUtils.defaultIfEmpty(config.get("address"), "127.0.0.1:6379").replace("{{redisAddress}}", redisSetting.getRedisAddress());
+        config.put("address", address);
+
         Request request = new Request();
+
         request.setUrl(restClientData.getUrl());
         request.setMethod(restClientData.getMethod());
-        request.setConfig(restClientData.getConfig());
+        request.setConfig(config);
         request.setHeaders(restClientData.getHeaders());
-        request.setParams(restClientData.getConfig());
+        request.setParams(config);
         request.setBody(restClientData.getBody());
 
         return request;

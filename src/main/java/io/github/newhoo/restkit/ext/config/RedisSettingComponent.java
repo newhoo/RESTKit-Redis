@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author huzunrong
  * @since 1.0.0
  */
-@State(name = "RESTKit_Setting_Ext", storages = {@Storage("restkit/RESTKit_Setting_Ext.xml")})
+@State(name = "RESTKit_Setting_Redis", storages = {@Storage("restkit/RESTKit_Setting_Redis.xml")})
 public class RedisSettingComponent implements PersistentStateComponent<RedisSetting> {
 
     private final RedisSetting redisSetting = new RedisSetting();
