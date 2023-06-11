@@ -2,11 +2,7 @@
 
 [简体中文](./README.zh_CN.md)
 
-[RESTKit-Redis](#) is a plugin that support redis for [RESTKit](https://plugins.jetbrains.com/plugin/14723-restkit) plugin from version 2.0.3.
-
-
-> Note  
-> RESTKit plugin has provided extension point from version 2.0.0. You can also support your framework restful apis like this plugin.
+[RESTKit-Redis](#) is a plugin that support redis for [RestfulBox](https://plugins.jetbrains.com/plugin/14723-restfulbox) plugin from version 2.0.3.
 
 If this plugin helps, please **🌟Star**! If you have any good idea, please let me know.
 

@@ -5,7 +5,7 @@
     <vendor email="huzunrong@foxmail.com" url="https://github.com/newhoo/RESTKit-Redis">RESTKit</vendor>
 
     <description><![CDATA[
-    <h1><a href="https://plugins.jetbrains.com/plugin/14723-restkit">RESTKit</a> EXTENSION</h1>
+    <h1><a href="https://plugins.jetbrains.com/plugin/14723-restfulbox">RestfulBox</a> Extension for Redis</h1>
 
     Support Redis for RESTKit plugin from version 2.0.0.
     <br/>

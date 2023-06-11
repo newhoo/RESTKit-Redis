@@ -1,11 +1,6 @@
 # RESTKit-Redis
 
-[RESTKit-Redis](#) 是一个依赖于[RESTKit](https://plugins.jetbrains.com/plugin/14723-restkit) 插件的插件，用于为`RESTKit`(2.0.3开始) 提供Redis支持。
-
-> 注意  
-> RESTKit从2.0.0开始提供了扩展点，如同本插件，你也能为RESTKit提供自己所需的接口扫描方式。
-
-如果你觉得本插件不错，请给个🌟Star吧，同时也欢迎提供宝贵的建议。
+本插件是[RestfulBox](https://plugins.jetbrains.com/plugin/14723-restfulbox) 的辅助插件，用于通过`RestfulBox`提供Redis的支持，功能比较简单。如果提升了你的开发效率，不妨一赞，同时也欢迎提供宝贵的建议。
 
 ## 安装
 - **插件市场安装**
