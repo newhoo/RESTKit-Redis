@@ -1,25 +1,26 @@
 package io.github.newhoo.restkit.ext.redis;
 
-import com.intellij.openapi.project.Project;
-import io.github.newhoo.restkit.common.KV;
-import io.github.newhoo.restkit.common.Request;
-import io.github.newhoo.restkit.common.RequestInfo;
-import io.github.newhoo.restkit.common.Response;
-import io.github.newhoo.restkit.common.RestClientData;
-import io.github.newhoo.restkit.common.RestItem;
-import io.github.newhoo.restkit.ext.config.RedisSetting;
-import io.github.newhoo.restkit.ext.config.RedisSettingComponent;
-import io.github.newhoo.restkit.restful.RestClient;
-import io.github.newhoo.restkit.restful.ep.RestClientProvider;
-import io.github.newhoo.restkit.util.JsonUtils;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypes;
+import io.github.newhoo.restkit.open.RestClient;
+import io.github.newhoo.restkit.open.ep.RestClientProvider;
+import io.github.newhoo.restkit.open.model.KV;
+import io.github.newhoo.restkit.open.model.RestClientData;
+import io.github.newhoo.restkit.open.request.Request;
+import io.github.newhoo.restkit.open.request.RequestInfo;
+import io.github.newhoo.restkit.open.request.Response;
+import io.github.newhoo.restkit.open.request.Status;
 import nl.melp.redis.Redis;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,39 +37,39 @@ public class RedisRestClient implements RestClient {
     }
 
     @Override
-    public List<KV> getConfig(@NotNull RestItem restItem, @NotNull Project project) {
+    public @NotNull List<KV> getConfig(@NotNull String projectName) {
         return Arrays.asList(
                 new KV("address", "{{redisAddress}}")
         );
     }
 
-    @NotNull
     @Override
-    public Request createRequest(RestClientData restClientData, Project project) {
-        RedisSetting redisSetting = RedisSettingComponent.getInstance(project).getState();
-        Map<String, String> config = restClientData.getConfig();
-        String address = StringUtils.defaultIfEmpty(config.get("address"), "127.0.0.1:6379").replace("{{redisAddress}}", redisSetting.getRedisAddress());
-        config.put("address", address);
+    public @NotNull Map<String, String> getConfigLabel() {
+        Map<String, String> map = new HashMap<>();
+        map.put("address", "Address: ");
+        return map;
+    }
 
+    @Override
+    public @NotNull Request createRequest(RestClientData restClientData) {
         Request request = new Request();
 
         request.setUrl(restClientData.getUrl());
         request.setMethod(restClientData.getMethod());
-        request.setConfig(config);
+        request.setConfig(restClientData.getConfig());
         request.setHeaders(restClientData.getHeaders());
-        request.setParams(config);
+        request.setParams(restClientData.getParams());
         request.setBody(restClientData.getBody());
 
         return request;
     }
 
-    @NotNull
     @Override
-    public RequestInfo sendRequest(Request request, Project project) {
+    public @NotNull RequestInfo sendRequest(Request request) {
         long startTs = System.currentTimeMillis();
         Object[] args;
         try {
-            args = JsonUtils.fromJsonArr(request.getBody(), Object.class).toArray(new Object[0]);
+            args = fromJsonArr(request.getBody(), Object.class).toArray(new Object[0]);
         } catch (Exception e) {
             return new RequestInfo(request, "wrong redis command, should be String array such as \n[\"GET\", \"key\"] ");
         }
@@ -80,20 +81,38 @@ public class RedisRestClient implements RestClient {
             if (result instanceof byte[]) {
                 response.setBody(new String((byte[]) result));
             } else {
-                response.setBody(JsonUtils.toJson(result));
+                response.setBody(toJson(result));
             }
-            return new RequestInfo(request, response, address, System.currentTimeMillis() - startTs);
+            return new RequestInfo(request, response, System.currentTimeMillis() - startTs, address, "127");
         } catch (Exception e) {
             RequestInfo requestInfo = new RequestInfo(request, e.toString());
-            requestInfo.setCost(System.currentTimeMillis() - startTs);
+            requestInfo.setTime(System.currentTimeMillis() - startTs);
             return requestInfo;
         }
+    }
+
+    @Override
+    public @NotNull FileType parseResponseFileType(Response response) {
+        return FileTypes.PLAIN_TEXT;
+    }
+
+    @Override
+    public void cancelRequest(@NotNull Request request) {
+    }
+
+    @Override
+    public @NotNull Status getResponseStatus(RequestInfo requestInfo) {
+        if (requestInfo.getResponse() == null || requestInfo.getResponse().getBody() == null) {
+            return new Status("ERROR", null, requestInfo.getTime(), null, requestInfo.getRemoteAddress(), requestInfo.getLocalAddress());
+        }
+        String status = "success";
+        return new Status(status, "success", requestInfo.getTime(), (long) requestInfo.getResponse().getBody().length(), requestInfo.getRemoteAddress(), requestInfo.getLocalAddress());
     }
 
     @NotNull
     @Override
     public String formatResponseInfo(RequestInfo requestInfo) {
-        return JsonUtils.toJson(requestInfo);
+        return toJson(requestInfo);
     }
 
     @NotNull
@@ -101,7 +120,7 @@ public class RedisRestClient implements RestClient {
     public String formatLogInfo(RequestInfo requestInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append("############################# ").append(LocalDateTime.now()).append(" #############################").append("\n");
-        sb.append(JsonUtils.toJson(requestInfo)).append("\n");
+        sb.append(toJson(requestInfo)).append("\n");
         return sb.toString();
     }
 
@@ -118,5 +137,16 @@ public class RedisRestClient implements RestClient {
         public RestClient createClient() {
             return new RedisRestClient();
         }
+    }
+
+    private String toJson(Object obj) {
+        if (obj == null || (obj instanceof CharSequence && ((CharSequence) obj).length() == 0)) {
+            return "";
+        }
+        return new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create().toJson(obj);
+    }
+
+    private <T> List<T> fromJsonArr(String json, Class<T> classOfT) throws JsonSyntaxException {
+        return new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create().fromJson(json, TypeToken.getParameterized(List.class, classOfT).getType());
     }
 }

@@ -1,29 +1,28 @@
 <idea-plugin>
     <id>io.github.newhoo.restkit.ext.redis</id>
-    <name>RESTKit-Redis</name>
-    <!--  <version>2.0.5</version>-->
-    <vendor email="huzunrong@foxmail.com" url="https://github.com/newhoo/RESTKit-Redis">RESTKit</vendor>
+    <name>RestfulBox-Redis</name>
+    <vendor email="huzunrong@foxmail.com" url="https://github.com/newhoo/RESTKit-Redis">RestfulBox</vendor>
 
     <description><![CDATA[
     <h1><a href="https://plugins.jetbrains.com/plugin/14723-restfulbox">RestfulBox</a> Extension for Redis</h1>
 
-    Support Redis for RESTKit plugin from version 2.0.0.
+    Support simple redis commands for RestfulBox plugin.
     <br/>
-    After installed this plugin, you should enable it in RESTKit plugin setting.
+    支持发送简单的redis命令，是 RestfulBox 的辅助插件。
     ]]></description>
 
     <change-notes><![CDATA[
-        1.0.0
+        1.0.1
         <ul>
-            <li>support simple redis storage and request with RESTKit plugin</li>
+            <li>support simple redis storage and request with RestfulBox plugin</li>
             <br/>
-            <li>通过RESTKit插件来提供对Redis的简单支持</li>
+            <li>通过 RestfulBox 插件来提供对Redis的简单支持</li>
         </ul>
     ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="212.0"/>
+    <idea-version since-build="231.1"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html on how to target different products -->
     <!-- uncomment to enable plugin in all products -->
@@ -32,12 +31,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <projectService serviceImplementation="io.github.newhoo.restkit.ext.config.RedisSettingComponent"/>
-        <projectConfigurable parentId="RESTKit.SettingConfigurable" instance="io.github.newhoo.restkit.ext.config.RedisSettingConfigurable"/>
     </extensions>
 
     <extensions defaultExtensionNs="io.github.newhoo.restkit">
-        <restfulResolver implementation="io.github.newhoo.restkit.ext.redis.RedisStoreResolver$RedisStoreResolverProvider"/>
         <restClient implementation="io.github.newhoo.restkit.ext.redis.RedisRestClient$RedisClientProvider"/>
     </extensions>
 

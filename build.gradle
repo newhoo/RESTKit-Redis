@@ -1,28 +1,45 @@
 plugins {
-    id 'java'
-    id 'org.jetbrains.intellij' version '0.4.10'
+    id("java")
+    id('org.jetbrains.intellij') version '1.10.1'
 }
 
 group 'io.github.newhoo.restkit.ext.redis'
-version '1.0.0'
+version '1.0.1'
 
-sourceCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    compile fileTree(dir: 'lib', includes: ['*jar'])
+    implementation fileTree(dir: 'lib', includes: ['*jar'])
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 
 intellij {
-    version '2021.2'
-    pluginName 'RESTKit-Redis'
-    updateSinceUntilBuild false
-    downloadSources = true
-    plugins = ['io.github.newhoo.restkit:2.0.3']
-    sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
+    pluginName.set('RestfulBox-Redis')
+//    version.set('2021.3')
+    version.set('2024.1')
+//    type.set("IU")
+    updateSinceUntilBuild.set(false)
+    downloadSources.set(true)
+    plugins.set(['io.github.newhoo.restkit:5.3.0'])
+    sandboxDir.set("${rootProject.rootDir}/idea-sandbox")
+}
+
+tasks {
+
+//    verifyPluginConfiguration {
+//        enabled = false
+//    }
+
+    buildSearchableOptions {
+        enabled = false
+    }
 }
