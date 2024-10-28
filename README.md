@@ -1,8 +1,8 @@
-# RESTKit-Redis
+# RestfulBox-Redis
 
 [简体中文](./README.zh_CN.md)
 
-[RESTKit-Redis](#) is a plugin that support redis for [RestfulBox](https://plugins.jetbrains.com/plugin/14723-restfulbox) plugin from version 2.0.3.
+[RestfulBox-Redis](#) is a plugin that support redis for [RestfulBox](https://plugins.jetbrains.com/plugin/14723-restfulbox) plugin from version 2.0.3.
 
 If this plugin helps, please **🌟Star**! If you have any good idea, please let me know.
 
@@ -10,25 +10,9 @@ If this plugin helps, please **🌟Star**! If you have any good idea, please let
 ## Install
 - **Using IDE plugin system**
 
-Recommended <kbd>Preferences(Settings)</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>find "RESTKit-Redis"</kbd> > <kbd>Install Plugin</kbd>
-
-- **Local Install**
-
-Download plugin form <kbd>distributions/RESTKit-Redis-x.x.x.zip</kbd>, then <kbd>Preferences(Settings)</kbd> > <kbd>Plugins</kbd> > <kbd>Install Plugin from Disk...</kbd>
+Recommended <kbd>Preferences(Settings)</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>find "RestfulBox-Redis"</kbd> > <kbd>Install Plugin</kbd>
 
 ## Usage
-After installed this plugin, you should enable it in `RESTKit` setting. Refresh in `RESTKit` window.
-
-![enable](./.images/setting.png)
-
-Set redis address and project name for saving api.
-
-![enable](./.images/address_config.png)
-
-
-### Save api to redis
-
-![enable](./.images/save_api_to_redis.png)
 
 ### Save redis command
 

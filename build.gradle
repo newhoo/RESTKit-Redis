@@ -29,7 +29,8 @@ intellij {
 //    type.set("IU")
     updateSinceUntilBuild.set(false)
     downloadSources.set(true)
-    plugins.set(['io.github.newhoo.restkit:5.3.0'])
+//    plugins.set(['io.github.newhoo.restkit:5.3.0'])
+    plugins.set([file("D:/Projects/Plugins/RestfulBox-Plus/build/libs/RestfulBox-5.3.3-obfuscated.jar")])
     sandboxDir.set("${rootProject.rootDir}/idea-sandbox")
 }
 
